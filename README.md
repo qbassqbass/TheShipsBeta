@@ -1,4 +1,4 @@
-MGoL
+The Ships 
 ====
 
-Conway's Game of Life clone testing
+Group Project: The Ships for 2 or more players. Client-Server Architecture
