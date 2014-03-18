@@ -25,6 +25,7 @@ public class MyPoint {
         else if(y<0) this.y = 0;
         else this.y = y;
         this.col = col;
+        System.out.println("x:"+this.x+" y:"+this.y);
     }
     @Override
     public boolean equals(Object obj){

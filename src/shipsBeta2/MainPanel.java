@@ -91,6 +91,42 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
         repaint();
     }
     
+    private void showPlaceForShip(int x, int y, int count){
+        if(((x + count) > dim_x-1) && rotation)
+            x -= ((x+count)-(dim_x-1));
+        else if(((y + count) > dim_y-1) && !rotation)
+            y -= ((y+count)-(dim_y-1));
+        for(int i = 0; i < count; i++){
+            if(rotation)
+                this.point[x + i][y] = this.yourColor;
+            else
+                this.point[x][y + i] = this.yourColor;
+        }
+        repaint();
+        for(int i = 0; i < count; i++){
+            if(rotation)
+                this.point[x + i][y] = 0;
+            else
+                this.point[x][y + i] = 0;
+        }
+    }
+    
+    private void placeShip(int x, int y, int count){
+        System.err.print("Start x:"+x+" y:"+y);
+        if(((x + count) > dim_x-1) && rotation)
+            x -= ((x+count)-(dim_x));
+        else if(((y + count) > dim_y-1) && !rotation)
+            y -= ((y+count)-(dim_y));
+        System.err.println("  End x:"+x+" y:"+y);
+        for(int i = 0; i < count; i++){
+            if(rotation)
+                this.points.add(new MyPoint(x + i, y, Color.BLACK));
+            else
+                this.points.add(new MyPoint(x, y + i, Color.BLACK));
+        }
+        repaint();
+    }
+    
     private void checkClick2(int x, int y){
         x /= pSize;
         y /= pSize;
@@ -146,6 +182,7 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
     }
     
     private int oldx,oldy;
+    private int ship;
     private boolean rotation = false;
     public void moveMouse(int x, int y){
         x /= pSize;
@@ -153,101 +190,119 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
         if(x != oldx | y != oldy){
 //            System.out.println("DEBUG: MoveMouse x:"+x+" y:"+y);
 //            System.out.println("oldx:"+oldx+" oldy:"+oldy);
-            point[x][y] = this.yourColor;
-            int ship = (int)this.getClientProperty("ship");
+//            point[x][y] = this.yourColor;
+            ship = (int)this.getClientProperty("ship");
             switch(ship){
                 case 0:{
-                    if(rotation){
-                        point[x+1][y] = this.yourColor;
-                    }else{
-                        point[x][y+1] = this.yourColor;
-                    }
+                    showPlaceForShip(x, y, 2);
                     break;
                 }
                 case 1:{
-                    if(rotation){
-                        point[x+1][y] = this.yourColor;
-                        point[x+2][y] = this.yourColor;
-                    }else{
-                        point[x][y+1] = this.yourColor;
-                        point[x][y+2] = this.yourColor;
-                    }
+                    showPlaceForShip(x, y, 3);
                     break;
                 }
                 case 2:{
-                    if(rotation){
-                        point[x+1][y] = this.yourColor;
-                        point[x+2][y] = this.yourColor;
-                        point[x+3][y] = this.yourColor;
-                    }else{
-                        point[x][y+1] = this.yourColor;
-                        point[x][y+2] = this.yourColor;
-                        point[x][y+3] = this.yourColor;
-                    }
+                    showPlaceForShip(x, y, 4);
                     break;
                 }
                 case 3:{
-                    if(rotation){
-                        point[x+1][y] = this.yourColor;
-                        point[x+2][y] = this.yourColor;
-                        point[x+3][y] = this.yourColor;
-                        point[x+4][y] = this.yourColor;
-                    }else{
-                        point[x][y+1] = this.yourColor;
-                        point[x][y+2] = this.yourColor;
-                        point[x][y+3] = this.yourColor;
-                        point[x][y+4] = this.yourColor;
-                    }
+                    showPlaceForShip(x, y, 5);
                     break;
                 }
             }
-            point[oldx][oldy] = 0;
-            switch(ship){
-                case 0:{
-                    if(rotation){
-                        point[oldx+1][oldy] = 0;
-                    }else{
-                        point[oldx][oldy+1] = 0;
-                    }
-                    break;
-                }
-                case 1:{
-                    if(rotation){
-                        point[oldx+1][oldy] = 0;
-                        point[oldx+2][oldy] = 0;
-                    }else{
-                        point[oldx][oldy+1] = 0;
-                        point[oldx][oldy+2] = 0;
-                    }
-                    break;
-                }
-                case 2:{
-                    if(rotation){
-                        point[oldx+1][oldy] = 0;
-                        point[oldx+2][oldy] = 0;
-                        point[oldx+3][oldy] = 0;
-                    }else{
-                        point[oldx][oldy+1] = 0;
-                        point[oldx][oldy+2] = 0;
-                        point[oldx][oldy+3] = 0;
-                    }
-                    break;
-                }
-                case 3:{
-                    if(rotation){
-                        point[oldx+1][oldy] = 0;
-                        point[oldx+2][oldy] = 0;
-                        point[oldx+3][oldy] = 0;
-                        point[oldx+4][oldy] = 0;
-                    }else{
-                        point[oldx][oldy+1] = 0;
-                        point[oldx][oldy+2] = 0;
-                        point[oldx][oldy+3] = 0;
-                        point[oldx][oldy+4] = 0;
-                    }
-                    break;
-                }
-            }
+//            switch(ship){
+//                case 0:{
+//                    if(rotation){
+//                        point[x+1][y] = this.yourColor;
+//                    }else{
+//                        point[x][y+1] = this.yourColor;
+//                    }
+//                    break;
+//                }
+//                case 1:{
+//                    if(rotation){
+//                        point[x+1][y] = this.yourColor;
+//                        point[x+2][y] = this.yourColor;
+//                    }else{
+//                        point[x][y+1] = this.yourColor;
+//                        point[x][y+2] = this.yourColor;
+//                    }
+//                    break;
+//                }
+//                case 2:{
+//                    if(rotation){
+//                        point[x+1][y] = this.yourColor;
+//                        point[x+2][y] = this.yourColor;
+//                        point[x+3][y] = this.yourColor;
+//                    }else{
+//                        point[x][y+1] = this.yourColor;
+//                        point[x][y+2] = this.yourColor;
+//                        point[x][y+3] = this.yourColor;
+//                    }
+//                    break;
+//                }
+//                case 3:{
+//                    if(rotation){
+//                        point[x+1][y] = this.yourColor;
+//                        point[x+2][y] = this.yourColor;
+//                        point[x+3][y] = this.yourColor;
+//                        point[x+4][y] = this.yourColor;
+//                    }else{
+//                        point[x][y+1] = this.yourColor;
+//                        point[x][y+2] = this.yourColor;
+//                        point[x][y+3] = this.yourColor;
+//                        point[x][y+4] = this.yourColor;
+//                    }
+//                    break;
+//                }
+//            }
+//            point[oldx][oldy] = 0;
+//            switch(ship){
+//                case 0:{
+//                    if(rotation){
+//                        point[oldx+1][oldy] = 0;
+//                    }else{
+//                        point[oldx][oldy+1] = 0;
+//                    }
+//                    break;
+//                }
+//                case 1:{
+//                    if(rotation){
+//                        point[oldx+1][oldy] = 0;
+//                        point[oldx+2][oldy] = 0;
+//                    }else{
+//                        point[oldx][oldy+1] = 0;
+//                        point[oldx][oldy+2] = 0;
+//                    }
+//                    break;
+//                }
+//                case 2:{
+//                    if(rotation){
+//                        point[oldx+1][oldy] = 0;
+//                        point[oldx+2][oldy] = 0;
+//                        point[oldx+3][oldy] = 0;
+//                    }else{
+//                        point[oldx][oldy+1] = 0;
+//                        point[oldx][oldy+2] = 0;
+//                        point[oldx][oldy+3] = 0;
+//                    }
+//                    break;
+//                }
+//                case 3:{
+//                    if(rotation){
+//                        point[oldx+1][oldy] = 0;
+//                        point[oldx+2][oldy] = 0;
+//                        point[oldx+3][oldy] = 0;
+//                        point[oldx+4][oldy] = 0;
+//                    }else{
+//                        point[oldx][oldy+1] = 0;
+//                        point[oldx][oldy+2] = 0;
+//                        point[oldx][oldy+3] = 0;
+//                        point[oldx][oldy+4] = 0;
+//                    }
+//                    break;
+//                }
+//            }
             repaint();
         }
         oldx = x;
@@ -259,7 +314,8 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
         if(e.getButton() == e.BUTTON3){
             if(this.rotation) this.rotation = false; else this.rotation = true;
         }else{
-            checkClick2(e.getX(), e.getY());
+            //checkClick2(e.getX(), e.getY());
+            this.placeShip(e.getX()/pSize, e.getY()/pSize, this.ship+2); ///!!! TODO
         }
         //checkClick(e.getX(), e.getY());
     }
