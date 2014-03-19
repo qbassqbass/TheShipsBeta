@@ -31,7 +31,7 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
     private final int dimx = dim_x * pSize;
     private final int dimy = dim_y * pSize;
     
-    private int yourColor = 1;
+    private int yourColor = 2;
     
     private int point[][] = new int[dimx/pSize][dimy/pSize];
     private ArrayList<MyPoint> points = new ArrayList<MyPoint>();
@@ -93,9 +93,9 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
     
     private void showPlaceForShip(int x, int y, int count){
         if(((x + count) > dim_x-1) && rotation)
-            x -= ((x+count)-(dim_x-1));
+            x -= ((x+count)-(dim_x));
         else if(((y + count) > dim_y-1) && !rotation)
-            y -= ((y+count)-(dim_y-1));
+            y -= ((y+count)-(dim_y));
         for(int i = 0; i < count; i++){
             if(rotation)
                 this.point[x + i][y] = this.yourColor;
@@ -179,6 +179,16 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
             }
         }
         repaint();
+    }
+    
+    private int checkShipLength(int ship){
+        switch(ship){
+            case 0: return 2;
+            case 1: return 3;
+            case 2: return 4;
+            case 3: return 5;
+        }
+        return 0;
     }
     
     private int oldx,oldy;
@@ -303,7 +313,7 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
 //                    break;
 //                }
 //            }
-            repaint();
+//            repaint();
         }
         oldx = x;
         oldy = y;
@@ -311,11 +321,14 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if(e.getButton() == e.BUTTON3){
-            if(this.rotation) this.rotation = false; else this.rotation = true;
+        if(e.getButton() == MouseEvent.BUTTON3){
+            this.rotation = !this.rotation;
         }else{
             //checkClick2(e.getX(), e.getY());
-            this.placeShip(e.getX()/pSize, e.getY()/pSize, this.ship+2); ///!!! TODO
+            if(TheMainFrame.shipsAvailable[ship] > 0){
+                TheMainFrame.shipsAvailable[ship] -= 1;
+                this.placeShip(e.getX()/pSize, e.getY()/pSize, this.checkShipLength(ship));
+            }
         }
         //checkClick(e.getX(), e.getY());
     }

@@ -13,13 +13,35 @@ import java.awt.Font;
  * @author Qbass
  */
 public class TheMainFrame extends javax.swing.JFrame {
+    
+    public static int[] shipsAvailable = new int[4];
 
+    
+    private void initShips(int gametype){
+        switch(gametype){
+            case 0:{    //standard game
+                TheMainFrame.shipsAvailable[0] = 4;
+                TheMainFrame.shipsAvailable[1] = 3;
+                TheMainFrame.shipsAvailable[2] = 2;
+                TheMainFrame.shipsAvailable[3] = 1;
+            }
+        }
+    }
     /**
      * Creates new form NewJFrame
      */
     public TheMainFrame() {
         initComponents();
         pGame.putClientProperty("ship", -1);
+        this.initShips(0);
+        this.refreshCounts();
+    }
+    
+    private void refreshCounts(){
+        this.lShipDestroyerCount.setText(String.valueOf(shipsAvailable[0]));
+        this.lShipCruiserCount.setText(String.valueOf(shipsAvailable[1]));
+        this.lShipBattleshipCount.setText(String.valueOf(shipsAvailable[2]));
+        this.lShipCarrierCount.setText(String.valueOf(shipsAvailable[3]));
     }
 
     /**
@@ -276,7 +298,7 @@ public class TheMainFrame extends javax.swing.JFrame {
     private void bConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bConnectActionPerformed
         bConnect.setText("Connect (N/A)");
     }//GEN-LAST:event_bConnectActionPerformed
-int addShipSelected = -1;
+    int addShipSelected = -1;
 
     private void addSelectShip(int ship){        
         pGame.putClientProperty("ship", ship);
@@ -311,6 +333,7 @@ int addShipSelected = -1;
             }
                 
         }
+        this.refreshCounts();
     }
     private void lShipDestroyerMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lShipDestroyerMouseClicked
         // TODO add your handling code here:
