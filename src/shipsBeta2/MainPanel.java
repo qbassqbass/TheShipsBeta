@@ -102,17 +102,44 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
             else
                 this.point[oldx][oldy + i] = 0;
         }
+        int color;
         if(((x + count) > dim_x-1) && rotation)
             x -= ((x+count)-(dim_x));
         else if(((y + count) > dim_y-1) && !rotation)
             y -= ((y+count)-(dim_y));
+        if(this.checkIfEligible(x, y, count)) color = 2;
+        else color = 3;
         for(int i = 0; i < count; i++){
             if(rotation)
-                this.point[x + i][y] = this.yourColor;
+                this.point[x + i][y] = color;//this.yourColor;
             else
-                this.point[x][y + i] = this.yourColor;
+                this.point[x][y + i] = color;//this.yourColor;
         }
         repaint();
+    }
+    
+    private boolean checkIfEligible(int x, int y, int count){
+//        boolean eligible = true;
+        for(int i = 0; i < count; i++){
+            if(rotation){
+                if(this.points.contains(new MyPoint(x + i, y, Color.BLACK)))
+                    return false;
+                if((this.points.contains(new MyPoint(x + i + 1, y, Color.BLACK))) |
+                    (this.points.contains(new MyPoint(x + i - 1, y, Color.BLACK))) |
+                    (this.points.contains(new MyPoint(x + i, y + 1, Color.BLACK))) |
+                    (this.points.contains(new MyPoint(x + i, y - 1, Color.BLACK))))
+                    return false;
+            }else{
+                if(this.points.contains(new MyPoint(x, y + i, Color.BLACK)))
+                    return false;
+                if((this.points.contains(new MyPoint(x + 1, y + i, Color.BLACK))) |
+                    (this.points.contains(new MyPoint(x - 1, y + i, Color.BLACK))) |
+                    (this.points.contains(new MyPoint(x, y + i + 1, Color.BLACK))) |
+                    (this.points.contains(new MyPoint(x, y + i - 1, Color.BLACK))))
+                    return false;
+            }            
+        }        
+        return true;
     }
     
     private void placeShip(int x, int y, int count){
@@ -122,13 +149,16 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
         else if(((y + count) > dim_y-1) && !rotation)
             y -= ((y+count)-(dim_y));
         System.err.println("  End x:"+x+" y:"+y);
-        for(int i = 0; i < count; i++){
-            if(rotation)
-                this.points.add(new MyPoint(x + i, y, Color.BLACK));
-            else
-                this.points.add(new MyPoint(x, y + i, Color.BLACK));
+        if(this.checkIfEligible(x, y, count)){
+            for(int i = 0; i < count; i++){
+                if(rotation)
+                    this.points.add(new MyPoint(x + i, y, Color.BLACK));
+                else
+                    this.points.add(new MyPoint(x, y + i, Color.BLACK));
+            }            
+            TheMainFrame.shipsAvailable[ship] -= 1;
+            this.point = new int[dimx/pSize][dimy/pSize];
         }
-        this.point = new int[dimx/pSize][dimy/pSize];
         repaint();
     }
     
@@ -208,6 +238,7 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
 //            point[x][y] = this.yourColor;
             ship = (int)this.getClientProperty("ship");
             int count = this.checkShipLength(ship);
+            if(TheMainFrame.shipsAvailable[ship] > 0)
             showPlaceForShip(x, y, count);
 //            switch(ship){
 //                case 0:{
@@ -351,7 +382,6 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
             //checkClick2(e.getX(), e.getY());
             if(ship > -1)
             if(TheMainFrame.shipsAvailable[ship] > 0){
-                TheMainFrame.shipsAvailable[ship] -= 1;
                 this.placeShip(e.getX()/pSize, e.getY()/pSize, this.checkShipLength(ship));
             }
         }

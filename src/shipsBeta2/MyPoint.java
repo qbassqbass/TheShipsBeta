@@ -13,7 +13,7 @@ import java.awt.Color;
  * @author qbass
  */
 public class MyPoint {
-    private int x,y;
+    private final int x,y;
     private Color col;
     private final int max = 400; // IMPORTANT TO DO!!
     
