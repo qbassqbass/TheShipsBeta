@@ -238,6 +238,7 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
 //            point[x][y] = this.yourColor;
             ship = (int)this.getClientProperty("ship");
             int count = this.checkShipLength(ship);
+            if(ship > -1)
             if(TheMainFrame.shipsAvailable[ship] > 0)
             showPlaceForShip(x, y, count);
 //            switch(ship){
