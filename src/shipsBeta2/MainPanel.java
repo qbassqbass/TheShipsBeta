@@ -8,7 +8,6 @@ package shipsBeta2;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -92,6 +91,17 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
     }
     
     private void showPlaceForShip(int x, int y, int count){
+//        System.out.println("oldx:"+oldx+" oldy:"+oldy);
+        if(((oldx + count) > dim_x-1) && rotation)
+            oldx -= ((oldx+count)-(dim_x));
+        else if(((oldy + count) > dim_y-1) && !rotation)
+            oldy -= ((oldy+count)-(dim_y));
+        for(int i = 0; i < count; i++){
+            if(rotation)
+                this.point[oldx + i][oldy] = 0;
+            else
+                this.point[oldx][oldy + i] = 0;
+        }
         if(((x + count) > dim_x-1) && rotation)
             x -= ((x+count)-(dim_x));
         else if(((y + count) > dim_y-1) && !rotation)
@@ -103,12 +113,6 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
                 this.point[x][y + i] = this.yourColor;
         }
         repaint();
-        for(int i = 0; i < count; i++){
-            if(rotation)
-                this.point[x + i][y] = 0;
-            else
-                this.point[x][y + i] = 0;
-        }
     }
     
     private void placeShip(int x, int y, int count){
@@ -124,6 +128,7 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
             else
                 this.points.add(new MyPoint(x, y + i, Color.BLACK));
         }
+        this.point = new int[dimx/pSize][dimy/pSize];
         repaint();
     }
     
@@ -202,24 +207,26 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
 //            System.out.println("oldx:"+oldx+" oldy:"+oldy);
 //            point[x][y] = this.yourColor;
             ship = (int)this.getClientProperty("ship");
-            switch(ship){
-                case 0:{
-                    showPlaceForShip(x, y, 2);
-                    break;
-                }
-                case 1:{
-                    showPlaceForShip(x, y, 3);
-                    break;
-                }
-                case 2:{
-                    showPlaceForShip(x, y, 4);
-                    break;
-                }
-                case 3:{
-                    showPlaceForShip(x, y, 5);
-                    break;
-                }
-            }
+            int count = this.checkShipLength(ship);
+            showPlaceForShip(x, y, count);
+//            switch(ship){
+//                case 0:{
+//                    showPlaceForShip(x, y, 2);
+//                    break;
+//                }
+//                case 1:{
+//                    showPlaceForShip(x, y, 3);
+//                    break;
+//                }
+//                case 2:{
+//                    showPlaceForShip(x, y, 4);
+//                    break;
+//                }
+//                case 3:{
+//                    showPlaceForShip(x, y, 5);
+//                    break;
+//                }
+//            }
 //            switch(ship){
 //                case 0:{
 //                    if(rotation){
@@ -321,21 +328,33 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if(e.getButton() == MouseEvent.BUTTON3){
-            this.rotation = !this.rotation;
-        }else{
-            //checkClick2(e.getX(), e.getY());
-            if(TheMainFrame.shipsAvailable[ship] > 0){
-                TheMainFrame.shipsAvailable[ship] -= 1;
-                this.placeShip(e.getX()/pSize, e.getY()/pSize, this.checkShipLength(ship));
-            }
-        }
+//        if(e.getButton() == MouseEvent.BUTTON3){
+//            this.rotation = !this.rotation;
+//        }else{
+//            //checkClick2(e.getX(), e.getY());
+//            if(ship > -1)
+//            if(TheMainFrame.shipsAvailable[ship] > 0){
+//                TheMainFrame.shipsAvailable[ship] -= 1;
+//                this.placeShip(e.getX()/pSize, e.getY()/pSize, this.checkShipLength(ship));
+//            }
+//        }
         //checkClick(e.getX(), e.getY());
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        
+        if(e.getButton() == MouseEvent.BUTTON3){
+            this.rotation = !this.rotation;
+            this.point = new int[dimx/pSize][dimy/pSize];
+            showPlaceForShip(e.getX()/pSize, e.getY()/pSize, this.checkShipLength(ship));
+        }else{
+            //checkClick2(e.getX(), e.getY());
+            if(ship > -1)
+            if(TheMainFrame.shipsAvailable[ship] > 0){
+                TheMainFrame.shipsAvailable[ship] -= 1;
+                this.placeShip(e.getX()/pSize, e.getY()/pSize, this.checkShipLength(ship));
+            }
+        }
     }
 
     @Override

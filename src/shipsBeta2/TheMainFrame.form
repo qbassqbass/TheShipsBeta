@@ -73,6 +73,7 @@
     </Component>
     <Container class="javax.swing.JPanel" name="pGame">
       <Events>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="pGameMouseClicked"/>
         <EventHandler event="mouseMoved" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="pGameMouseMoved"/>
       </Events>
       <AuxValues>

@@ -84,6 +84,11 @@ public class TheMainFrame extends javax.swing.JFrame {
             }
         });
 
+        pGame.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                pGameMouseClicked(evt);
+            }
+        });
         pGame.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
                 pGameMouseMoved(evt);
@@ -362,6 +367,10 @@ public class TheMainFrame extends javax.swing.JFrame {
     private void pGameMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pGameMouseMoved
         // TODO add your handling code here:
     }//GEN-LAST:event_pGameMouseMoved
+
+    private void pGameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pGameMouseClicked
+        this.refreshCounts();
+    }//GEN-LAST:event_pGameMouseClicked
 
     /**
      * @param args the command line arguments
