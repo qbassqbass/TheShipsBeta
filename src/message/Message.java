@@ -4,13 +4,16 @@
  * and open the template in the editor.
  */
 
-package shipsBetaServer;
+package message;
+
+import java.io.Serializable;
 
 /**
  *
  * @author Jakub
  */
-public class Message {
+public class Message implements Serializable{
+    private static final long serialVersionUID = 1L;
     private int type;
     private String message;
     private Object obj;
@@ -23,5 +26,10 @@ public class Message {
         this.message = mess;
         this.type = type;
         this.obj = obj;
+    }
+    
+    @Override
+    public String toString(){
+        return ""+this.type+":"+this.message;
     }
 }

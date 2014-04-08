@@ -7,6 +7,14 @@
 package shipsBeta2;
 
 import java.awt.Font;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import message.*;
 
 /**
  *
@@ -15,6 +23,10 @@ import java.awt.Font;
 public class TheMainFrame extends javax.swing.JFrame {
     
     public static int[] shipsAvailable = new int[4];
+    private Socket socket = null;
+    private ObjectInputStream oin = null;
+    private ObjectOutputStream oout = null;
+    private final int PORT = 8980;
 
     
     private void initShips(int gametype){
@@ -319,8 +331,44 @@ public class TheMainFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_lShipDestroyerMouseExited
 
+    private boolean init() {
+        boolean isOk = false;
+        try {
+            InetAddress addr = InetAddress.getByName("127.0.0.1");
+            socket = new Socket(addr, PORT);
+            System.out.println("połączono!");
+            this.oin = new ObjectInputStream(this.socket.getInputStream()); //input for objects
+            this.oout = new ObjectOutputStream(this.socket.getOutputStream()); // output for objects
+            bConnect.setText("Connected");
+            bConnect.setEnabled(false);
+            isOk = true;
+        } catch (IOException e) {
+            System.err.println("IOErrorr!");
+            bConnect.setText("Connect (N/A)");
+            isOk = false;
+        }
+        return isOk;
+    }
+    private class Connector implements Runnable{
+
+        @Override
+        public void run() {
+            try {
+                oout.writeObject(new Message(0, "TestMessage"));
+            } catch (IOException ex) {
+                Logger.getLogger(TheMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+    }
+    
     private void bConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bConnectActionPerformed
-        bConnect.setText("Connect (N/A)");
+        if(init()){
+            Connector connector = new Connector();
+            Thread connThread = new Thread(connector);
+            connThread.start();
+        }
+        
     }//GEN-LAST:event_bConnectActionPerformed
     int addShipSelected = -1;
 
