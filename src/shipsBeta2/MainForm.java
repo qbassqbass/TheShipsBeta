@@ -17,7 +17,7 @@ public class MainForm extends javax.swing.JPanel {
      */
     public MainForm() {
         initComponents();
-        pGame = new MainPanel();
+        pGame = new MainPanel(20);
     }
     
     public static void main(String args[]) {

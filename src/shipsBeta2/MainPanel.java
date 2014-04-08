@@ -24,21 +24,35 @@ import javax.swing.JPanel;
  * @author Qbass
  */
 public class MainPanel extends JPanel implements MouseListener, KeyListener, MouseMotionListener{
-    private final int dim_x = 40; // number of cols
-    private final int dim_y = 40; // number of rows
-    private final int pSize = 20; //point size pSize x pSize
-    private final int dimx = dim_x * pSize;
-    private final int dimy = dim_y * pSize;
+    private final int dim_x = 15; // number of cols(def. 15)
+    private final int dim_y = 15; // number of rows(def. 15)
+    private final int pSize; //point size pSize x pSize(def. 20)
+    private final int dimx;
+    private final int dimy;
+    private final int player; // 0 - you, [1..10] - opponent
     
     private int yourColor = 2;
     
-    private int point[][] = new int[dimx/pSize][dimy/pSize];
+    private int point[][] = new int[dim_x][dim_y];
     private ArrayList<MyPoint> points = new ArrayList<MyPoint>();
     Graphics2D g2d;
     
     public int test;
     
-    public MainPanel(){
+    public MainPanel(int player){
+        this.player = player;
+        switch(this.player){
+            case 0:{
+                pSize = 20;
+                break;
+            }
+            default:{
+                pSize = 10;
+                break;
+            }
+        }
+        dimx = dim_x * pSize;
+        dimy = dim_y * pSize;
         addMouseListener(this);
         addMouseMotionListener(this);
         setFocusable(true);
@@ -241,118 +255,6 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
             if(ship > -1)
             if(TheMainFrame.shipsAvailable[ship] > 0)
             showPlaceForShip(x, y, count);
-//            switch(ship){
-//                case 0:{
-//                    showPlaceForShip(x, y, 2);
-//                    break;
-//                }
-//                case 1:{
-//                    showPlaceForShip(x, y, 3);
-//                    break;
-//                }
-//                case 2:{
-//                    showPlaceForShip(x, y, 4);
-//                    break;
-//                }
-//                case 3:{
-//                    showPlaceForShip(x, y, 5);
-//                    break;
-//                }
-//            }
-//            switch(ship){
-//                case 0:{
-//                    if(rotation){
-//                        point[x+1][y] = this.yourColor;
-//                    }else{
-//                        point[x][y+1] = this.yourColor;
-//                    }
-//                    break;
-//                }
-//                case 1:{
-//                    if(rotation){
-//                        point[x+1][y] = this.yourColor;
-//                        point[x+2][y] = this.yourColor;
-//                    }else{
-//                        point[x][y+1] = this.yourColor;
-//                        point[x][y+2] = this.yourColor;
-//                    }
-//                    break;
-//                }
-//                case 2:{
-//                    if(rotation){
-//                        point[x+1][y] = this.yourColor;
-//                        point[x+2][y] = this.yourColor;
-//                        point[x+3][y] = this.yourColor;
-//                    }else{
-//                        point[x][y+1] = this.yourColor;
-//                        point[x][y+2] = this.yourColor;
-//                        point[x][y+3] = this.yourColor;
-//                    }
-//                    break;
-//                }
-//                case 3:{
-//                    if(rotation){
-//                        point[x+1][y] = this.yourColor;
-//                        point[x+2][y] = this.yourColor;
-//                        point[x+3][y] = this.yourColor;
-//                        point[x+4][y] = this.yourColor;
-//                    }else{
-//                        point[x][y+1] = this.yourColor;
-//                        point[x][y+2] = this.yourColor;
-//                        point[x][y+3] = this.yourColor;
-//                        point[x][y+4] = this.yourColor;
-//                    }
-//                    break;
-//                }
-//            }
-//            point[oldx][oldy] = 0;
-//            switch(ship){
-//                case 0:{
-//                    if(rotation){
-//                        point[oldx+1][oldy] = 0;
-//                    }else{
-//                        point[oldx][oldy+1] = 0;
-//                    }
-//                    break;
-//                }
-//                case 1:{
-//                    if(rotation){
-//                        point[oldx+1][oldy] = 0;
-//                        point[oldx+2][oldy] = 0;
-//                    }else{
-//                        point[oldx][oldy+1] = 0;
-//                        point[oldx][oldy+2] = 0;
-//                    }
-//                    break;
-//                }
-//                case 2:{
-//                    if(rotation){
-//                        point[oldx+1][oldy] = 0;
-//                        point[oldx+2][oldy] = 0;
-//                        point[oldx+3][oldy] = 0;
-//                    }else{
-//                        point[oldx][oldy+1] = 0;
-//                        point[oldx][oldy+2] = 0;
-//                        point[oldx][oldy+3] = 0;
-//                    }
-//                    break;
-//                }
-//                case 3:{
-//                    if(rotation){
-//                        point[oldx+1][oldy] = 0;
-//                        point[oldx+2][oldy] = 0;
-//                        point[oldx+3][oldy] = 0;
-//                        point[oldx+4][oldy] = 0;
-//                    }else{
-//                        point[oldx][oldy+1] = 0;
-//                        point[oldx][oldy+2] = 0;
-//                        point[oldx][oldy+3] = 0;
-//                        point[oldx][oldy+4] = 0;
-//                    }
-//                    break;
-//                }
-//            }
-//            repaint();
         }
         oldx = x;
         oldy = y;
@@ -379,7 +281,7 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
             this.rotation = !this.rotation;
             this.point = new int[dimx/pSize][dimy/pSize];
             showPlaceForShip(e.getX()/pSize, e.getY()/pSize, this.checkShipLength(ship));
-        }else{
+        }else if(e.getButton() == MouseEvent.BUTTON1){
             //checkClick2(e.getX(), e.getY());
             if(ship > -1)
             if(TheMainFrame.shipsAvailable[ship] > 0){
@@ -425,7 +327,8 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        this.moveMouse(e.getX(), e.getY());
+        if(this.player == 0)
+            this.moveMouse(e.getX(), e.getY());
     }
     
 }

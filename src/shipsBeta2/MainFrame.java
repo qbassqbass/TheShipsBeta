@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 public class MainFrame extends JFrame{
     public MainFrame(){
         super("..::The Ships Game::0.01b::..");
-        JPanel panel = new MainPanel();
+        JPanel panel = new MainPanel(20);
         
         add(panel);
         
