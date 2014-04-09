@@ -418,7 +418,7 @@ public class TheMainFrame extends javax.swing.JFrame {
         } catch (IOException e) {
             System.err.println("IOErrorr!");
             bConnect.setText("Connect (Try again)");
-            this.lInfo.setText("Cannot connect");
+            this.lInfo.setText("Cannot connect"); 
             isOk = false;
         }
         return isOk;
