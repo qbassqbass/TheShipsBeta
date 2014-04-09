@@ -11,7 +11,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
 import message.*;
+import shipsBeta2.MyPoint;
 
 /**
  *
@@ -50,6 +52,14 @@ public class Server implements Runnable{
     private void checkMessage(Message mess) throws IOException{
         if(mess.getMessage().equals("IDREQ")){
             this.oout.writeObject(new Message(this.playerId, "IDRESP"));
+        }
+        else if(mess.getMessage().equals("SHIPS")){
+            ArrayList<MyPoint> points = (ArrayList<MyPoint>)mess.getObj();
+            if(points != null)
+                for(MyPoint p : points){
+                    System.out.println(p);
+                }
+            this.oout.writeObject(new Message(0, this.playerId, "OK"));
         }
     }
     @Override

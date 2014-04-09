@@ -65,7 +65,16 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
     
     @Override
     protected void paintComponent(Graphics g){
-    super.paintComponent(g);
+        super.paintComponent(g);
+        if(this.getClientProperty("isReset") != null){
+            if((boolean)this.getClientProperty("isReset")){
+                this.points = new ArrayList<MyPoint>();
+                this.putClientProperty("isReset", false);
+            }
+        }else if(this.getClientProperty("SHIPS2") != null){
+            this.points = (ArrayList<MyPoint>) this.getClientProperty("SHIPS2");
+            this.putClientProperty("SHIPS2", null);
+        }
         g2d = (Graphics2D) g;
         for(int i=0;i<this.dimx/pSize;i++){
             for(int j=0;j<this.dimy/pSize;j++){
@@ -263,6 +272,7 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
         }
         oldx = x;
         oldy = y;
+        
     }
 
     @Override

@@ -28,6 +28,8 @@ public class TheMainFrame extends javax.swing.JFrame {
     private ObjectOutputStream oout = null;
     private final int PORT = 8980;
     private int player = -2;
+    private int gametype = 0;
+    private Message message;
 
     
     private void initShips(int gametype){
@@ -46,7 +48,7 @@ public class TheMainFrame extends javax.swing.JFrame {
     public TheMainFrame() {
         initComponents();
         pGame.putClientProperty("ship", -1);
-        this.initShips(0);
+        this.initShips(gametype);
         this.refreshCounts();
     }
     
@@ -55,6 +57,13 @@ public class TheMainFrame extends javax.swing.JFrame {
         this.lShipCruiserCount.setText(String.valueOf(shipsAvailable[1]));
         this.lShipBattleshipCount.setText(String.valueOf(shipsAvailable[2]));
         this.lShipCarrierCount.setText(String.valueOf(shipsAvailable[3]));
+    }
+    
+    private boolean checkCounts(){
+        for(int i : shipsAvailable)
+            if(i>0) return false;
+        
+        return true;
     }
 
     /**
@@ -79,9 +88,13 @@ public class TheMainFrame extends javax.swing.JFrame {
         lShipCruiserCount = new javax.swing.JLabel();
         lShipBattleshipCount = new javax.swing.JLabel();
         lShipCarrierCount = new javax.swing.JLabel();
-        jPanel1 = new MainPanel(1);
+        pGame2 = new MainPanel(1);
+        bAccept = new javax.swing.JButton();
+        bReset = new javax.swing.JButton();
         lPlayer = new javax.swing.JLabel();
         lPlayerIdValue = new javax.swing.JLabel();
+        pStatusBar = new javax.swing.JPanel();
+        lInfo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("..::The Ships Beta 0.02b::..");
@@ -119,7 +132,7 @@ public class TheMainFrame extends javax.swing.JFrame {
         );
         pGameLayout.setVerticalGroup(
             pGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 271, Short.MAX_VALUE)
+            .addGap(0, 249, Short.MAX_VALUE)
         );
 
         lShipsAvailable.setText("Ships available:");
@@ -184,27 +197,42 @@ public class TheMainFrame extends javax.swing.JFrame {
 
         lShipCarrierCount.setText("1");
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout pGame2Layout = new javax.swing.GroupLayout(pGame2);
+        pGame2.setLayout(pGame2Layout);
+        pGame2Layout.setHorizontalGroup(
+            pGame2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 100, Short.MAX_VALUE)
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        pGame2Layout.setVerticalGroup(
+            pGame2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 100, Short.MAX_VALUE)
         );
+
+        bAccept.setText("Accept");
+        bAccept.setEnabled(false);
+        bAccept.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bAcceptActionPerformed(evt);
+            }
+        });
+
+        bReset.setText("Reset");
+        bReset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bResetActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pGameInfoLayout = new javax.swing.GroupLayout(pGameInfo);
         pGameInfo.setLayout(pGameInfoLayout);
         pGameInfoLayout.setHorizontalGroup(
             pGameInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pGameInfoLayout.createSequentialGroup()
+                .addComponent(pGame2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(pGameInfoLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pGameInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pGameInfoLayout.createSequentialGroup()
-                        .addComponent(lShipsAvailable)
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(pGameInfoLayout.createSequentialGroup()
                         .addGroup(pGameInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lShipCarrier, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
@@ -216,11 +244,15 @@ public class TheMainFrame extends javax.swing.JFrame {
                             .addComponent(lShipBattleshipCount)
                             .addComponent(lShipCruiserCount)
                             .addComponent(lShipDestroyerCount)
-                            .addComponent(lShipCarrierCount))))
+                            .addComponent(lShipCarrierCount)))
+                    .addGroup(pGameInfoLayout.createSequentialGroup()
+                        .addComponent(lShipsAvailable)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(pGameInfoLayout.createSequentialGroup()
+                        .addComponent(bAccept)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(bReset)))
                 .addContainerGap())
-            .addGroup(pGameInfoLayout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
         );
         pGameInfoLayout.setVerticalGroup(
             pGameInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -246,13 +278,35 @@ public class TheMainFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lShipCarrier)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(pGameInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(bAccept)
+                    .addComponent(bReset))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(pGame2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(117, 117, 117))
         );
 
         lPlayer.setText("Player ID:");
 
         lPlayerIdValue.setText("N/C");
+
+        lInfo.setText("Info...");
+
+        javax.swing.GroupLayout pStatusBarLayout = new javax.swing.GroupLayout(pStatusBar);
+        pStatusBar.setLayout(pStatusBarLayout);
+        pStatusBarLayout.setHorizontalGroup(
+            pStatusBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pStatusBarLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lInfo)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pStatusBarLayout.setVerticalGroup(
+            pStatusBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pStatusBarLayout.createSequentialGroup()
+                .addComponent(lInfo)
+                .addGap(0, 13, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -268,7 +322,9 @@ public class TheMainFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(bExit))
             .addGroup(layout.createSequentialGroup()
-                .addComponent(pGame, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(pGame, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pStatusBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pGameInfo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
@@ -284,11 +340,12 @@ public class TheMainFrame extends javax.swing.JFrame {
                         .addComponent(lPlayer)
                         .addComponent(lPlayerIdValue)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pGame, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(pGameInfo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addComponent(pGame, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(pStatusBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(pGameInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
         );
 
         pack();
@@ -355,11 +412,13 @@ public class TheMainFrame extends javax.swing.JFrame {
             this.oin = new ObjectInputStream(this.socket.getInputStream()); //input for objects
             this.oout = new ObjectOutputStream(this.socket.getOutputStream()); // output for objects
             bConnect.setText("Connected");
+            this.lInfo.setText("Connected");
             bConnect.setEnabled(false);
             isOk = true;
         } catch (IOException e) {
             System.err.println("IOErrorr!");
-            bConnect.setText("Connect (N/A)");
+            bConnect.setText("Connect (Try again)");
+            this.lInfo.setText("Cannot connect");
             isOk = false;
         }
         return isOk;
@@ -375,7 +434,7 @@ public class TheMainFrame extends javax.swing.JFrame {
             return -2;
         }
         
-        private void sendShipsToServer() throws IOException{
+        public void sendShipsToServer() throws IOException{
             oout.writeObject(new Message(1, player, "SHIPS", pGame.getClientProperty("SHIPS")));
         }
         @Override
@@ -397,12 +456,13 @@ public class TheMainFrame extends javax.swing.JFrame {
         }
         
     }
-    
+    Connector connector;
     private void bConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bConnectActionPerformed
         if(init()){
-            Connector connector = new Connector();
+            connector = new Connector();
             Thread connThread = new Thread(connector);
             connThread.start();
+            this.bAccept.setEnabled(true);
         }
         
     }//GEN-LAST:event_bConnectActionPerformed
@@ -475,6 +535,34 @@ public class TheMainFrame extends javax.swing.JFrame {
         this.refreshCounts();
     }//GEN-LAST:event_pGameMouseClicked
 
+    private void bResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bResetActionPerformed
+        pGame.putClientProperty("isReset", (boolean)true);
+        pGame.repaint();
+        initShips(gametype);
+        
+    }//GEN-LAST:event_bResetActionPerformed
+
+    private void bAcceptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAcceptActionPerformed
+        if(checkCounts())
+            try {
+                connector.sendShipsToServer();
+                message = (Message)this.oin.readObject();
+                System.err.println("DEBUG|ShipsSent");
+                if(message.getMessage().equals("OK")){
+                    pGame2.putClientProperty("SHIPS2", pGame.getClientProperty("SHIPS"));
+                    pGame2.repaint();
+                    this.bAccept.setEnabled(false);
+                    this.bReset.setEnabled(false);
+                }
+            }catch(IOException e){
+                System.err.println("IOException: "+e);
+            }catch(ClassNotFoundException e){
+                System.err.println("ClassNotFound: "+e);
+            }
+        else
+            lInfo.setText("You have to use ALL ships");
+    }//GEN-LAST:event_bAcceptActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -511,9 +599,11 @@ public class TheMainFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bAccept;
     private javax.swing.JButton bConnect;
     private javax.swing.JButton bExit;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JButton bReset;
+    private javax.swing.JLabel lInfo;
     private javax.swing.JLabel lPlayer;
     private javax.swing.JLabel lPlayerIdValue;
     private javax.swing.JLabel lShipBattleship;
@@ -527,6 +617,8 @@ public class TheMainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel lShipsAvailable;
     private javax.swing.JPanel pGame;
     private javax.swing.JPanel pGame1;
+    private javax.swing.JPanel pGame2;
     private javax.swing.JPanel pGameInfo;
+    private javax.swing.JPanel pStatusBar;
     // End of variables declaration//GEN-END:variables
 }

@@ -4,15 +4,17 @@
  */
 package shipsBeta2;
 
-import ships.*;
 import java.awt.Color;
+import java.io.Serializable;
+import ships.*;
 
 /**
  * @version 0.4
  * @since 2013-07-20
  * @author qbass
  */
-public class MyPoint {
+public class MyPoint implements Serializable{
+    private static final long serialVersionUID = 1L;
     private final int x,y;
     private Color col;
     private final int max = 400; // IMPORTANT TO DO!!
@@ -57,6 +59,11 @@ public class MyPoint {
     }
     public Color getCol(){
         return this.col;
+    }
+    
+    @Override
+    public String toString(){
+        return "x:"+this.x+"|y:"+this.y;
     }
     
 }
