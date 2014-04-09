@@ -32,6 +32,7 @@ public class ServerFrame extends javax.swing.JFrame {
     }
     
     private ServerSocket sockfd;
+    private boolean stop = false;
     
     private void runServer(String addr, int port){
         System.out.println("DEBUG|Addr:"+addr+"|Port:"+port);
@@ -58,8 +59,7 @@ public class ServerFrame extends javax.swing.JFrame {
             @Override
             public void run(){
                 while(true){
-                    Scanner in = new Scanner(System.in);
-                    if(in.nextLine().equals("exit")) doExit();
+                    if(stop) doExit();
                 }
             }
         }
@@ -69,6 +69,7 @@ public class ServerFrame extends javax.swing.JFrame {
         
         class Run implements Runnable{
             private Ex ex;
+            private int playerCount = -1;
             public Run(Ex ex){
                 this.ex = ex;
             }
@@ -81,9 +82,10 @@ public class ServerFrame extends javax.swing.JFrame {
                     try{
                         Socket tmpsockfd = sockfd.accept();
                         if(tmpsockfd != null){
+                            playerCount++;
                             tLogOutput.append("Client connected from "+tmpsockfd.getInetAddress().getHostAddress()+"\n");
                             String st = new StringBuilder(new SimpleDateFormat("dd-mm-yyyy").format(new Date())).toString();
-                            ex.thrli.add(new Thread(new Server(tmpsockfd))); //TODO Servicing Class
+                            ex.thrli.add(new Thread(new Server(tmpsockfd, playerCount))); //TODO Servicing Class
                             ex.thrli.get(ex.thrli.size()-1).start();
                         }
                     }catch(SocketTimeoutException e){
@@ -149,6 +151,11 @@ public class ServerFrame extends javax.swing.JFrame {
         });
 
         bStopServer.setText("Stop Server");
+        bStopServer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bStopServerActionPerformed(evt);
+            }
+        });
 
         lServerIP.setText("Server IP:");
 
@@ -267,6 +274,13 @@ public class ServerFrame extends javax.swing.JFrame {
         runServer(this.lServerIPValue.getText(), 
                 Integer.valueOf(this.lServerPortValue.getText()));
     }//GEN-LAST:event_bStartServerActionPerformed
+
+    private void stopServer(){
+        this.stop = true;
+    }
+    private void bStopServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bStopServerActionPerformed
+        this.stopServer();
+    }//GEN-LAST:event_bStopServerActionPerformed
 
     /**
      * @param args the command line arguments

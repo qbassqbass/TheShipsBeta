@@ -27,6 +27,7 @@ public class TheMainFrame extends javax.swing.JFrame {
     private ObjectInputStream oin = null;
     private ObjectOutputStream oout = null;
     private final int PORT = 8980;
+    private int player = -2;
 
     
     private void initShips(int gametype){
@@ -45,7 +46,7 @@ public class TheMainFrame extends javax.swing.JFrame {
     public TheMainFrame() {
         initComponents();
         pGame.putClientProperty("ship", -1);
-        this.initShips(0);
+        this.initShips(player);
         this.refreshCounts();
     }
     
@@ -349,13 +350,29 @@ public class TheMainFrame extends javax.swing.JFrame {
         }
         return isOk;
     }
+    
     private class Connector implements Runnable{
-
+        private int requestId() throws IOException, ClassNotFoundException{
+            oout.writeObject(new Message(-1, "IDREQ"));
+            Message response = (Message)oin.readObject();
+            if(response.getType() == -1 && "IDRESP".equals(response.getMessage()))
+                return (int)response.getSender();
+            
+            return -2;
+        }
         @Override
         public void run() {
             try {
-                oout.writeObject(new Message(0, "TestMessage"));
+                int tmpId = requestId();
+                if(tmpId != -2){
+                    player = tmpId;
+                    System.out.println("Your id is: "+player);
+                }
+                else System.err.println("Cannot assign playerId");
+//                oout.writeObject(new Message(0, player, "TestMessage"));
             } catch (IOException ex) {
+                Logger.getLogger(TheMainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
                 Logger.getLogger(TheMainFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

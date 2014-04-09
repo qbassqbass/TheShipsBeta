@@ -6,16 +6,11 @@
 
 package shipsBetaServer;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import message.*;
 
 /**
@@ -24,13 +19,15 @@ import message.*;
  */
 public class Server implements Runnable{
     private final Socket sockfd;
-     private ObjectOutputStream oout; // output for objects
-     private ObjectInputStream oin; //input for objects
-     private String threadName;
-     private Message message;
+    private ObjectOutputStream oout; // output for objects
+    private ObjectInputStream oin; //input for objects
+    private String threadName;
+    private Message message;
+    private final int playerId;
     
-    public Server(Socket sock){
+    public Server(Socket sock, int id){
         this.sockfd = sock;
+        this.playerId = id;
         try{
             this.oout = new ObjectOutputStream(this.sockfd.getOutputStream()); // output for objects
             this.oin = new ObjectInputStream(this.sockfd.getInputStream()); //input for objects
@@ -50,15 +47,22 @@ public class Server implements Runnable{
         }
     }
 
+    private void checkMessage(Message mess) throws IOException{
+        if(mess.getMessage().equals("IDREQ")){
+            this.oout.writeObject(new Message(this.playerId, "IDRESP"));
+        }
+    }
     @Override
     public void run() {
         this.threadName = Thread.currentThread().getName();
         while(!Thread.currentThread().isInterrupted()){
             try{
                 message = (Message)this.oin.readObject();
-                System.out.println(message);
+                checkMessage(message);
+//                System.out.println(message);
             } catch (SocketException e){ 
                 System.err.println("Client Disconnected");
+                this.endThread();
                 Thread.currentThread().interrupt();
             } catch (IOException | ClassNotFoundException ex){
                 System.err.println("Error: "+ex);
