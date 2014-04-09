@@ -39,6 +39,10 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
     
     public int test;
     
+    public ArrayList<MyPoint> getPoints(){
+        return this.points;
+    }
+    
     public MainPanel(int player){
         this.player = player;
         switch(this.player){
@@ -174,6 +178,7 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
             this.point = new int[dimx/pSize][dimy/pSize];
         }
         repaint();
+        this.putClientProperty("SHIPS", this.points);
     }
     
     private void checkClick2(int x, int y){

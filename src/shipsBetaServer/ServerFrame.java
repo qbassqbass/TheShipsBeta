@@ -84,7 +84,6 @@ public class ServerFrame extends javax.swing.JFrame {
                         if(tmpsockfd != null){
                             playerCount++;
                             tLogOutput.append("Client connected from "+tmpsockfd.getInetAddress().getHostAddress()+"\n");
-                            String st = new StringBuilder(new SimpleDateFormat("dd-mm-yyyy").format(new Date())).toString();
                             ex.thrli.add(new Thread(new Server(tmpsockfd, playerCount))); //TODO Servicing Class
                             ex.thrli.get(ex.thrli.size()-1).start();
                         }

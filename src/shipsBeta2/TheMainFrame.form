@@ -27,6 +27,10 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="bConnect" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="lPlayer" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="lPlayerIdValue" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
               <Component id="bExit" min="-2" max="-2" attributes="0"/>
           </Group>
@@ -41,9 +45,15 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="bConnect" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="bExit" alignment="3" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="bConnect" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="bExit" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="103" alignment="1" groupAlignment="3" attributes="0">
+                      <Component id="lPlayer" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="lPlayerIdValue" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
@@ -252,5 +262,15 @@
         </Container>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JLabel" name="lPlayer">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Player ID:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lPlayerIdValue">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="N/C"/>
+      </Properties>
+    </Component>
   </SubComponents>
 </Form>

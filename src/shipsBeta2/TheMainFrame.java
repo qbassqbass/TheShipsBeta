@@ -46,7 +46,7 @@ public class TheMainFrame extends javax.swing.JFrame {
     public TheMainFrame() {
         initComponents();
         pGame.putClientProperty("ship", -1);
-        this.initShips(player);
+        this.initShips(0);
         this.refreshCounts();
     }
     
@@ -80,6 +80,8 @@ public class TheMainFrame extends javax.swing.JFrame {
         lShipBattleshipCount = new javax.swing.JLabel();
         lShipCarrierCount = new javax.swing.JLabel();
         jPanel1 = new MainPanel(1);
+        lPlayer = new javax.swing.JLabel();
+        lPlayerIdValue = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("..::The Ships Beta 0.02b::..");
@@ -248,6 +250,10 @@ public class TheMainFrame extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        lPlayer.setText("Player ID:");
+
+        lPlayerIdValue.setText("N/C");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -255,6 +261,10 @@ public class TheMainFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(bConnect)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lPlayer)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lPlayerIdValue)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(bExit))
             .addGroup(layout.createSequentialGroup()
@@ -266,9 +276,13 @@ public class TheMainFrame extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(bConnect)
-                    .addComponent(bExit))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(bConnect)
+                        .addComponent(bExit))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(lPlayer)
+                        .addComponent(lPlayerIdValue)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pGame, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -360,6 +374,10 @@ public class TheMainFrame extends javax.swing.JFrame {
             
             return -2;
         }
+        
+        private void sendShipsToServer() throws IOException{
+            oout.writeObject(new Message(1, player, "SHIPS", pGame.getClientProperty("SHIPS")));
+        }
         @Override
         public void run() {
             try {
@@ -367,6 +385,7 @@ public class TheMainFrame extends javax.swing.JFrame {
                 if(tmpId != -2){
                     player = tmpId;
                     System.out.println("Your id is: "+player);
+                    lPlayerIdValue.setText(String.valueOf(player));
                 }
                 else System.err.println("Cannot assign playerId");
 //                oout.writeObject(new Message(0, player, "TestMessage"));
@@ -495,6 +514,8 @@ public class TheMainFrame extends javax.swing.JFrame {
     private javax.swing.JButton bConnect;
     private javax.swing.JButton bExit;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel lPlayer;
+    private javax.swing.JLabel lPlayerIdValue;
     private javax.swing.JLabel lShipBattleship;
     private javax.swing.JLabel lShipBattleshipCount;
     private javax.swing.JLabel lShipCarrier;
