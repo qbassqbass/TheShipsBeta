@@ -20,6 +20,7 @@ import shipsBeta2.MyPoint;
  * @author Jakub
  */
 public class Server implements Runnable{
+    
     private final Socket sockfd;
     private ObjectOutputStream oout; // output for objects
     private ObjectInputStream oin; //input for objects
@@ -55,11 +56,14 @@ public class Server implements Runnable{
         }
         else if(mess.getMessage().equals("SHIPS")){
             ArrayList<MyPoint> points = (ArrayList<MyPoint>)mess.getObj();
-            if(points != null)
-                for(MyPoint p : points){
-                    System.out.println(p);
-                }
-            this.oout.writeObject(new Message(0, this.playerId, "OK"));
+            if(points != null){
+                ServerFrame.addBoard(this.playerId, points);
+//                DEBUG THINGY
+//                for(MyPoint p : points){
+//                    System.out.println(p);
+//                } 
+            }
+           this.oout.writeObject(new Message(0, this.playerId, "OK"));
         }
     }
     @Override

@@ -50,6 +50,7 @@ public class TheMainFrame extends javax.swing.JFrame {
         pGame.putClientProperty("ship", -1);
         this.initShips(gametype);
         this.refreshCounts();
+        this.lGameMode.setText("Setting Mode");
     }
     
     private void refreshCounts(){
@@ -95,6 +96,7 @@ public class TheMainFrame extends javax.swing.JFrame {
         lPlayerIdValue = new javax.swing.JLabel();
         pStatusBar = new javax.swing.JPanel();
         lInfo = new javax.swing.JLabel();
+        lGameMode = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("..::The Ships Beta 0.02b::..");
@@ -308,6 +310,8 @@ public class TheMainFrame extends javax.swing.JFrame {
                 .addGap(0, 13, Short.MAX_VALUE))
         );
 
+        lGameMode.setText("jLabel1");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -320,6 +324,8 @@ public class TheMainFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lPlayerIdValue)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lGameMode)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bExit))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -335,7 +341,8 @@ public class TheMainFrame extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(bConnect)
-                        .addComponent(bExit))
+                        .addComponent(bExit)
+                        .addComponent(lGameMode))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(lPlayer)
                         .addComponent(lPlayerIdValue)))
@@ -551,9 +558,12 @@ public class TheMainFrame extends javax.swing.JFrame {
                 if(message.getMessage().equals("OK")){
                     pGame2.putClientProperty("SHIPS2", pGame.getClientProperty("SHIPS"));
                     pGame2.repaint();
+                    pGame.putClientProperty("isReset", (boolean)true);
+                    pGame.repaint();
                     this.bAccept.setEnabled(false);
                     this.bReset.setEnabled(false);
                 }
+                this.lGameMode.setText("Battle Mode!");
             }catch(IOException e){
                 System.err.println("IOException: "+e);
             }catch(ClassNotFoundException e){
@@ -603,6 +613,7 @@ public class TheMainFrame extends javax.swing.JFrame {
     private javax.swing.JButton bConnect;
     private javax.swing.JButton bExit;
     private javax.swing.JButton bReset;
+    private javax.swing.JLabel lGameMode;
     private javax.swing.JLabel lInfo;
     private javax.swing.JLabel lPlayer;
     private javax.swing.JLabel lPlayerIdValue;

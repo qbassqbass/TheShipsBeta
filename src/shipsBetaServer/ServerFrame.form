@@ -35,6 +35,8 @@
                               <Component id="bStartServer" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="bStopServer" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="bDebug" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace min="0" pref="74" max="32767" attributes="0"/>
@@ -51,6 +53,7 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="bStartServer" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="bStopServer" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="bDebug" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="pServerInfo" min="-2" max="-2" attributes="0"/>
@@ -210,5 +213,13 @@
         </Container>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JButton" name="bDebug">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="DebugBoards"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bDebugActionPerformed"/>
+      </Events>
+    </Component>
   </SubComponents>
 </Form>

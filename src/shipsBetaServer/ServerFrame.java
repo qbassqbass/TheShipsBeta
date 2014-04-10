@@ -10,25 +10,64 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import shipsBeta2.MyPoint;
 
 /**
  *
  * @author Jakub
  */
 public class ServerFrame extends javax.swing.JFrame {
+    
+    private static class Board{
+        private int id;
+        private ArrayList<MyPoint> points;
+        
+        public Board(int id, ArrayList<MyPoint> pts){
+            this.id = id;
+            this.points = pts;
+        }
+        
+        public int getId(){
+            return this.id;
+        }
+        
+        public ArrayList getPoints(){
+            return this.points;
+        }
+        
+        @Override
+        public String toString(){
+            String str = "";
+            str += this.id+"\n";
+            for (MyPoint p : this.points)
+                str += p.toString()+"\n";
+            return str;
+        }
+    }
+    
+    private static ArrayList<ArrayList<MyPoint>> points = new ArrayList<ArrayList<MyPoint>>();
+    private static ArrayList<Board> boards = new ArrayList<Board>();
 
     /**
      * Creates new form Server
      */
     public ServerFrame() {
         initComponents();
+    }
+    
+    public static void addBoard(int playerId, ArrayList<MyPoint> pts){
+        boards.add(new Board(playerId, pts));
+    }
+    
+    public static ArrayList getBoard(int id){
+        for(Board b : boards){
+            if(b.getId() == id) return b.getPoints();
+        }
+        return null;
     }
     
     private ServerSocket sockfd;
@@ -138,6 +177,7 @@ public class ServerFrame extends javax.swing.JFrame {
         lLogInfo = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tLogOutput = new javax.swing.JTextArea();
+        bDebug = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("The Ships Server Beta");
@@ -233,6 +273,13 @@ public class ServerFrame extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        bDebug.setText("DebugBoards");
+        bDebug.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bDebugActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -247,7 +294,9 @@ public class ServerFrame extends javax.swing.JFrame {
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(bStartServer)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(bStopServer)))
+                                .addComponent(bStopServer)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(bDebug)))
                         .addGap(0, 74, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -257,7 +306,8 @@ public class ServerFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bStartServer)
-                    .addComponent(bStopServer))
+                    .addComponent(bStopServer)
+                    .addComponent(bDebug))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pServerInfo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -280,6 +330,13 @@ public class ServerFrame extends javax.swing.JFrame {
     private void bStopServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bStopServerActionPerformed
         this.stopServer();
     }//GEN-LAST:event_bStopServerActionPerformed
+
+    private void bDebugActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDebugActionPerformed
+        tLogOutput.append("Boards:\n");
+        for(Board b: boards){
+            tLogOutput.append(b.toString());
+        }
+    }//GEN-LAST:event_bDebugActionPerformed
 
     /**
      * @param args the command line arguments
@@ -317,6 +374,7 @@ public class ServerFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bDebug;
     private javax.swing.JButton bStartServer;
     private javax.swing.JButton bStopServer;
     private javax.swing.JScrollPane jScrollPane1;
