@@ -6,6 +6,7 @@
 
 package shipsBeta2;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -449,8 +450,26 @@ public class TheMainFrame extends javax.swing.JFrame {
         public void shoot(MyPoint dest){
             try {
                 oout.writeObject(new Message(2, player, "SHOT", dest));
+                message = (Message)oin.readObject();
+                if(message.getSender() == player){
+                    if(message.getType() == 2){
+                        MyPoint p = (MyPoint)message.getObj();
+                        if(message.getMessage().equals("HIT")){  
+                            p.setCol(Color.red);                          
+                            pGame.putClientProperty("HIT", p);
+                        }else if(message.getMessage().equals("NOHIT")){
+                            p.setCol(Color.gray);
+                            pGame.putClientProperty("NOHIT", p);
+                        }else{
+                            System.err.println("message not known:"+message.getMessage());
+                        }
+                        pGame.repaint();
+                    }
+                }
             } catch (IOException ex) {
                 System.err.println("IOEx: "+ex);
+            } catch (ClassNotFoundException ex) {
+                System.err.println("ClassNotFound: "+ex);
             }
         }
         

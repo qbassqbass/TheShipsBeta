@@ -73,6 +73,9 @@ public class Server implements Runnable{
             if(playerId == 0) opponentId = 1; else opponentId = 0;
             if(ServerFrame.getBoard(opponentId).contains(shot)){
                 System.err.println("Player:"+playerId+" hit "+opponentId+" at "+shot);
+                this.oout.writeObject(new Message(2, this.playerId, "HIT", shot));
+            }else{
+                this.oout.writeObject(new Message(2, this.playerId, "NOHIT", shot));
             }
         }
     }

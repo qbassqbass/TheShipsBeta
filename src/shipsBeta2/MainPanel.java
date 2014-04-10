@@ -82,6 +82,14 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
             if((boolean)this.getClientProperty("battlemode"))
                 this.battlemode = true;
         }
+        if(this.getClientProperty("HIT") != null){
+            this.points.add((MyPoint)this.getClientProperty("HIT"));
+            this.putClientProperty("HIT", null);
+        }
+        if(this.getClientProperty("NOHIT") != null){
+            this.points.add((MyPoint)this.getClientProperty("NOHIT"));
+            this.putClientProperty("NOHIT", null);
+        }
         g2d = (Graphics2D) g;
         for(int i=0;i<this.dimx/pSize;i++){
             for(int j=0;j<this.dimy/pSize;j++){
