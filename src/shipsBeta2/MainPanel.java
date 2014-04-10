@@ -31,6 +31,8 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
     private final int dimy;
     private final int player; // 0 - you, [1..10] - opponent
     
+    private boolean battlemode = false; // false - setting mode, true - battle mode
+    
     private int yourColor = 2;
     
     private int point[][] = new int[dim_x][dim_y];
@@ -71,9 +73,14 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
                 this.points = new ArrayList<MyPoint>();
                 this.putClientProperty("isReset", false);
             }
-        }else if(this.getClientProperty("SHIPS2") != null){
+        }
+        if(this.getClientProperty("SHIPS2") != null){
             this.points = (ArrayList<MyPoint>) this.getClientProperty("SHIPS2");
             this.putClientProperty("SHIPS2", null);
+        }
+        if(this.getClientProperty("battlemode") != null){
+            if((boolean)this.getClientProperty("battlemode"))
+                this.battlemode = true;
         }
         g2d = (Graphics2D) g;
         for(int i=0;i<this.dimx/pSize;i++){
@@ -261,14 +268,18 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
         x /= pSize;
         y /= pSize;
         if(x != oldx | y != oldy){
-//            System.out.println("DEBUG: MoveMouse x:"+x+" y:"+y);
-//            System.out.println("oldx:"+oldx+" oldy:"+oldy);
-//            point[x][y] = this.yourColor;
-            ship = (int)this.getClientProperty("ship");
-            int count = this.checkShipLength(ship);
-            if(ship > -1)
-            if(TheMainFrame.shipsAvailable[ship] > 0)
-            showPlaceForShip(x, y, count);
+            if(!battlemode){
+    //            System.out.println("DEBUG: MoveMouse x:"+x+" y:"+y);
+    //            System.out.println("oldx:"+oldx+" oldy:"+oldy);
+    //            point[x][y] = this.yourColor;
+                ship = (int)this.getClientProperty("ship");
+                int count = this.checkShipLength(ship);
+                if(ship > -1)
+                if(TheMainFrame.shipsAvailable[ship] > 0)
+                showPlaceForShip(x, y, count);
+            }else{
+                
+            }
         }
         oldx = x;
         oldy = y;
@@ -292,15 +303,22 @@ public class MainPanel extends JPanel implements MouseListener, KeyListener, Mou
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if(e.getButton() == MouseEvent.BUTTON3){
-            this.rotation = !this.rotation;
-            this.point = new int[dimx/pSize][dimy/pSize];
-            showPlaceForShip(e.getX()/pSize, e.getY()/pSize, this.checkShipLength(ship));
-        }else if(e.getButton() == MouseEvent.BUTTON1){
-            //checkClick2(e.getX(), e.getY());
-            if(ship > -1)
-            if(TheMainFrame.shipsAvailable[ship] > 0){
-                this.placeShip(e.getX()/pSize, e.getY()/pSize, this.checkShipLength(ship));
+        if(!battlemode){
+            if(e.getButton() == MouseEvent.BUTTON3){
+                this.rotation = !this.rotation;
+                this.point = new int[dimx/pSize][dimy/pSize];
+                showPlaceForShip(e.getX()/pSize, e.getY()/pSize, this.checkShipLength(ship));
+            }else if(e.getButton() == MouseEvent.BUTTON1){
+                //checkClick2(e.getX(), e.getY());
+                if(ship > -1)
+                if(TheMainFrame.shipsAvailable[ship] > 0){
+                    this.placeShip(e.getX()/pSize, e.getY()/pSize, this.checkShipLength(ship));
+                }
+            }
+        }else{
+            if(e.getButton() == MouseEvent.BUTTON1){
+                MyPoint p = new MyPoint(e.getX()/pSize, e.getY()/pSize, Color.black);
+                this.putClientProperty("shot", p);
             }
         }
     }

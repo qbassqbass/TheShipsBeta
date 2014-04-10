@@ -65,6 +65,16 @@ public class Server implements Runnable{
             }
            this.oout.writeObject(new Message(0, this.playerId, "OK"));
         }
+        else if(mess.getMessage().equals("SHOT")){
+            MyPoint shot = (MyPoint)mess.getObj();
+//            System.err.println("Player:"+playerId+" shot at:"+shot);
+            //temporary things.
+            int opponentId;
+            if(playerId == 0) opponentId = 1; else opponentId = 0;
+            if(ServerFrame.getBoard(opponentId).contains(shot)){
+                System.err.println("Player:"+playerId+" hit "+opponentId+" at "+shot);
+            }
+        }
     }
     @Override
     public void run() {

@@ -22,6 +22,7 @@ import message.*;
  */
 public class TheMainFrame extends javax.swing.JFrame {
     
+    private boolean battlemode = false;
     public static int[] shipsAvailable = new int[4];
     private Socket socket = null;
     private ObjectInputStream oin = null;
@@ -48,6 +49,7 @@ public class TheMainFrame extends javax.swing.JFrame {
     public TheMainFrame() {
         initComponents();
         pGame.putClientProperty("ship", -1);
+        pGame.putClientProperty("battlemode", (boolean)false);
         this.initShips(gametype);
         this.refreshCounts();
         this.lGameMode.setText("Setting Mode");
@@ -62,8 +64,7 @@ public class TheMainFrame extends javax.swing.JFrame {
     
     private boolean checkCounts(){
         for(int i : shipsAvailable)
-            if(i>0) return false;
-        
+            if(i>0) return false;        
         return true;
     }
 
@@ -444,6 +445,15 @@ public class TheMainFrame extends javax.swing.JFrame {
         public void sendShipsToServer() throws IOException{
             oout.writeObject(new Message(1, player, "SHIPS", pGame.getClientProperty("SHIPS")));
         }
+        
+        public void shoot(MyPoint dest){
+            try {
+                oout.writeObject(new Message(2, player, "SHOT", dest));
+            } catch (IOException ex) {
+                System.err.println("IOEx: "+ex);
+            }
+        }
+        
         @Override
         public void run() {
             try {
@@ -537,9 +547,19 @@ public class TheMainFrame extends javax.swing.JFrame {
     private void pGameMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pGameMouseMoved
         // TODO add your handling code here:
     }//GEN-LAST:event_pGameMouseMoved
-
+    
     private void pGameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pGameMouseClicked
         this.refreshCounts();
+        if(battlemode){
+//            System.err.println("DEBUG|BattleModeON");
+            MyPoint p = (MyPoint)pGame.getClientProperty("shot");
+            if(p != null){
+                System.out.println(p);
+                connector.shoot(p);
+            }
+        }else{
+//            System.err.println("DEBUG|BattleModeOFF");
+        }
     }//GEN-LAST:event_pGameMouseClicked
 
     private void bResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bResetActionPerformed
@@ -559,11 +579,13 @@ public class TheMainFrame extends javax.swing.JFrame {
                     pGame2.putClientProperty("SHIPS2", pGame.getClientProperty("SHIPS"));
                     pGame2.repaint();
                     pGame.putClientProperty("isReset", (boolean)true);
+                    pGame.putClientProperty("battlemode", (boolean)true);
                     pGame.repaint();
                     this.bAccept.setEnabled(false);
                     this.bReset.setEnabled(false);
                 }
                 this.lGameMode.setText("Battle Mode!");
+                this.battlemode = true;
             }catch(IOException e){
                 System.err.println("IOException: "+e);
             }catch(ClassNotFoundException e){
